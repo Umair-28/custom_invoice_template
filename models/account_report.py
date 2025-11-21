@@ -52,14 +52,14 @@ class AccountReport(models.AbstractModel):
             GROUP BY aa.account_type, aa.name
         '''
         
-        # Execute query: 3 placeholders, 3 parameters
+        # Execute query (3 placeholders, 3 parameters)
         self.env.cr.execute(income_query, (company_id, date_from, date_to))
         income_results = self.env.cr.dictfetchall()
         
         for record in income_results:
             balance = abs(record['balance'])
-            # FIX: Ensure field is always a string before .lower()
-            name_lower = str(record['name'] or '').lower() 
+            # FIX: Use str() for robustness against non-string DB values
+            name_lower = str(record['name'] or '').lower()
             
             # Categorize income
             if record['account_type'] == 'income':
@@ -88,13 +88,13 @@ class AccountReport(models.AbstractModel):
             GROUP BY aa.account_type, aa.name, aa.code
         '''
         
-        # Execute query: 3 placeholders, 3 parameters (Correct)
+        # Execute query (3 placeholders, 3 parameters)
         self.env.cr.execute(expense_query, (company_id, date_from, date_to))
         expense_results = self.env.cr.dictfetchall()
         
         for record in expense_results:
             balance = abs(record['balance'])
-            # FIX: Ensure field is always a string before .lower()
+            # FIX: Use str() for robustness against non-string DB values
             name_lower = str(record['name'] or '').lower()
             code = record['code'] or ''
             
@@ -146,7 +146,7 @@ class AccountReport(models.AbstractModel):
                 AND (aa.name ILIKE '%%tax expense%%' OR aa.name ILIKE '%%income tax%%')
         '''
         
-        # Execute query: 3 placeholders, 3 parameters
+        # Execute query (3 placeholders, 3 parameters)
         self.env.cr.execute(tax_query, (company_id, date_from, date_to))
         tax_result = self.env.cr.fetchone()
         

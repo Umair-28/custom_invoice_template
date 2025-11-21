@@ -20,10 +20,10 @@
                                 </h3>
                             </div>
                             <div class="col-4 text-right">
-                                <!-- <strong>e-Invoice</strong>
-                                <div t-if="o.l10n_in_edi_signed_qr_code_image">
+                                <strong>e-Invoice</strong>
+                                <div t-if="hasattr(o, 'l10n_in_edi_signed_qr_code_image') and o.l10n_in_edi_signed_qr_code_image">
                                     <img t-att-src="'data:image/png;base64,' + o.l10n_in_edi_signed_qr_code_image" style="width:120px;height:120px;border:1px solid #ccc;"/>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
 
@@ -33,7 +33,7 @@
                         <div class="row mt-2" style="font-size: 10px;">
                             <div class="col-12">
                                 <table class="table-borderless" style="width:100%;">
-                                    <tr t-if="o.l10n_in_edi_irn">
+                                    <tr t-if="hasattr(o, 'l10n_in_edi_irn') and o.l10n_in_edi_irn">
                                         <td width="12%">
                                             <strong>IRN</strong>
                                         </td>
@@ -42,7 +42,7 @@
                                             <span t-field="o.l10n_in_edi_irn"/>
                                         </td>
                                     </tr>
-                                    <tr t-if="o.l10n_in_edi_ack_no">
+                                    <tr t-if="hasattr(o, 'l10n_in_edi_ack_no') and o.l10n_in_edi_ack_no">
                                         <td>
                                             <strong>Ack No.</strong>
                                         </td>

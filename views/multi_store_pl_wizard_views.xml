@@ -1,8 +1,9 @@
 <odoo>
     <record id="view_inherit_pl_report_add_wizard_button" model="ir.ui.view">
-        <field name="name">account.report.view.inherit.pl.wizard.button.final</field>
+        <field name="name">account.report.view.inherit.pl.wizard.button.final.v3</field>
         <field name="model">account.report</field> 
-        <field name="inherit_id" ref="account_reports.report_financial_search_view"/> <field name="arch" type="xml">
+        <field name="inherit_id" ref="account_reports.action_account_report_pl"/> 
+        <field name="arch" type="xml">
             <xpath expr="//div[hasclass('o_account_reports_actions')]" position="inside">
                 <button name="%(action_multi_store_pl_wizard)d"
                         string="Multi-Store P&amp;L"

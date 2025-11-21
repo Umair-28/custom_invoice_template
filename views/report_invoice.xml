@@ -141,8 +141,8 @@
                             <!-- Customer as Consignee for Sales -->
                             <span t-field="o.partner_shipping_id.name" t-if="o.partner_shipping_id else o.partner_id.name"/><br/>
                             <span t-field="o.partner_shipping_id.street" t-if="o.partner_shipping_id else o.partner_id.street"/><br/>
-                            <span t-if="(o.partner_shipping_id and o.partner_shipping_id.street2) or o.partner_id.street2" 
-                                  t-field="o.partner_shipping_id.street2" t-if="o.partner_shipping_id else o.partner_id.street2"/><br/>
+                            <span t-if="(o.partner_shipping_id and o.partner_shipping_id.street2) or o.partner_id.street2"/><br/> 
+                            <span field="o.partner_shipping_id.street2" t-if="o.partner_shipping_id else o.partner_id.street2"/><br/>
                             <t t-set="ship_partner" t-value="o.partner_shipping_id or o.partner_id"/>
                             <span t-field="ship_partner.city"/>, <span t-field="ship_partner.state_id.name"/><br/>
                             <strong>GSTIN/UIN:</strong> <span t-field="ship_partner.vat"/><br/>

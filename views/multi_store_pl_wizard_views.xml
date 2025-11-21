@@ -36,8 +36,8 @@
 
     <!-- Menu Item under Accounting -> Reporting -> Management -->
     <menuitem id="menu_multi_store_pl_report"
-              name="Multi-Store P&amp;L Report"
-              parent="account_reports_management_menu"
-              action="action_multi_store_pl_wizard"
-              sequence="10"/>
+          name="Multi-Store P&amp;L Report"
+          parent="account.account_reports_management_menu"
+          action="action_multi_store_pl_wizard"
+          sequence="10"/>
 </odoo>

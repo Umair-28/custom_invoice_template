@@ -26,9 +26,11 @@
         'account',
         'l10n_in',
         'l10n_in_edi',
+        'account_reports'
     ],
     'data': [
         'views/report_invoice.xml',
+        'views/multi_store_pl_wizard_views.xml',
     ],
     'installable': True,
     'application': False,

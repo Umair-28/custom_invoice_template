@@ -36,8 +36,8 @@
 
     <!-- Menu Item under Accounting -> Reporting -> Financial Reports -->
     <menuitem id="menu_multi_store_pl_report"
-              name="Multi-Store PL Report"
-              parent="account.menu_finance_reports"
-              action="action_multi_store_pl_wizard"
-              sequence="10"/>
+          name="Multi-Store PL Report"
+          parent="account.menu_account_reports_india"
+          action="action_multi_store_pl_wizard"
+          sequence="10"/>
 </odoo>

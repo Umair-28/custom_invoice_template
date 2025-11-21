@@ -57,7 +57,7 @@ class AccountReport(models.AbstractModel):
         
         for record in income_results:
             balance = abs(record['balance'])
-            name_lower = (record['name'] or '').lower()
+            name_lower = str(record['name'] or '').lower()
             
             # Categorize income
             if record['account_type'] == 'income':
@@ -91,7 +91,7 @@ class AccountReport(models.AbstractModel):
         
         for record in expense_results:
             balance = abs(record['balance'])
-            name_lower = (record['name'] or '').lower()
+            name_lower = str(record['name'] or '').lower()
             code = record['code'] or ''
             
             # Categorize expenses by keywords

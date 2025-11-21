@@ -468,7 +468,7 @@ No.</th>
 
                         <!-- HSN/SAC Summary -->
                         <!-- HSN/SAC Summary -->
-                        <div class="row mt-3">
+                        <!-- <div class="row mt-3">
                             <div class="col-12">
                                 <strong style="font-size: 11px;">HSN/SAC Summary</strong>
                                 <table class="table table-sm table-bordered indian-invoice-table mt-1">
@@ -484,7 +484,6 @@ No.</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Build HSN summary using Python expression -->
                                         <t t-set="hsn_data" t-value="{}"/>
                                         <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
                                             <t t-set="hsn" t-value="line.product_id.l10n_in_hsn_code if line.product_id else 'N/A'"/>
@@ -500,7 +499,6 @@ No.</th>
                                             </t>
                                         </t>
 
-                                        <!-- Display HSN rows -->
                                         <t t-foreach="sorted(hsn_data.items())" t-as="hsn_row">
                                             <tr>
                                                 <td>
@@ -523,7 +521,6 @@ No.</th>
                                             </tr>
                                         </t>
 
-                                        <!-- HSN Total Row -->
                                         <tr style="font-weight: bold; background-color: #f0f0f0;">
                                             <td>
                                                 <strong>Total</strong>
@@ -554,7 +551,7 @@ No.</th>
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Tax Amount in Words -->
                         <div class="row mt-2">

@@ -1,437 +1,455 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Custom Indian GST Tax Invoice Report Template -->
-    <template id="report_tax_invoice_document_indian" inherit_id="account.report_invoice_document" priority="50">
-        
-        <!-- Add custom CSS -->
-        <xpath expr="//t[@t-call='web.external_layout']" position="before">
-            <style>
-                .indian-invoice-table { font-size: 10px; }
-                .indian-invoice-table td, .indian-invoice-table th { padding: 5px !important; }
-                .bordered-box { border: 2px solid #000; padding: 10px; }
-            </style>
-        </xpath>
+    <template id="report_invoice_indian_gst">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .indian-invoice-table { font-size: 10px; }
+                            .indian-invoice-table td, .indian-invoice-table th { padding: 5px !important; }
+                            .bordered-box { border: 2px solid #000; padding: 10px; }
+                        </style>
 
-        <!-- Replace the invoice title section -->
-        <xpath expr="//h2[@class='mt-4']" position="before">
-            <div class="row">
-                <div class="col-8">
-                    <h3><strong>Tax Invoice</strong></h3>
-                </div>
-                <div class="col-4 text-right">
-                    <strong>e-Invoice</strong>
-                    <div t-if="o.l10n_in_edi_signed_qr_code_image">
-                        <img t-att-src="'data:image/png;base64,' + o.l10n_in_edi_signed_qr_code_image" 
-                             style="width:120px;height:120px;border:1px solid #ccc;"/>
-                    </div>
-                </div>
-            </div>
-        </xpath>
-
-        <!-- Add IRN Details before informations div -->
-        <xpath expr="//div[@id='informations']" position="before">
-            <div class="row mt-2 mb-3" style="font-size: 10px;">
-                <div class="col-12">
-                    <table class="table-borderless" style="width:100%;">
-                        <tr t-if="o.l10n_in_edi_irn">
-                            <td width="12%"><strong>IRN</strong></td>
-                            <td width="3%">:</td>
-                            <td><span t-field="o.l10n_in_edi_irn"/></td>
-                        </tr>
-                        <tr t-if="o.l10n_in_edi_ack_no">
-                            <td><strong>Ack No.</strong></td>
-                            <td>:</td>
-                            <td><span t-field="o.name"/></td>
-                        </tr>
-                        <tr t-if="o.invoice_date">
-                            <td><strong>Ack Date</strong></td>
-                            <td>:</td>
-                            <td><span t-field="o.invoice_date" t-options='{"format": "dd-MMM-yy"}'/></td>
-                        </tr>
-                    </table>
-                    <hr style="border-top: 2px solid #000;"/>
-                </div>
-            </div>
-        </xpath>
-
-        <!-- Replace the informations section completely -->
-        <xpath expr="//div[@id='informations']" position="replace">
-            <div id="informations" class="row mt-3 mb-3">
-                
-                <!-- Row 1: Supplier Info and Invoice Details -->
-                <div class="col-6" style="padding-right: 5px;">
-                    <div class="bordered-box" style="min-height: 180px; font-size: 10px;">
-                        <t t-if="o.move_type in ['in_invoice', 'in_refund']">
-                            <!-- Vendor as Supplier for Purchase Bills -->
-                            <div t-if="o.partner_id.image_1920" style="margin-bottom: 10px;">
-                                <img t-att-src="image_data_uri(o.partner_id.image_1920)" 
-                                     style="max-height: 50px; max-width: 120px;"/>
+                        <!-- Header: Tax Invoice Title and QR Code -->
+                        <div class="row">
+                            <div class="col-8">
+                                <h3><strong>Tax Invoice</strong></h3>
                             </div>
-                            <strong style="font-size: 12px;"><span t-field="o.partner_id.name"/></strong><br/>
-                            <span t-field="o.partner_id.street"/><br/>
-                            <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br/>
-                            <span t-field="o.partner_id.city"/>, <span t-field="o.partner_id.state_id.name"/><br/>
-                            <span t-field="o.partner_id.zip"/><br/>
-                            <strong>GSTIN/UIN:</strong> <span t-field="o.partner_id.vat"/><br/>
-                            <strong>State Name:</strong> <span t-field="o.partner_id.state_id.name"/>, 
-                            Code: <span t-field="o.partner_id.state_id.l10n_in_tin"/>
-                        </t>
-                        <t t-else="">
-                            <!-- Company as Supplier for Sales Invoices -->
-                            <div t-if="o.company_id.logo" style="margin-bottom: 10px;">
-                                <img t-att-src="image_data_uri(o.company_id.logo)" 
-                                     style="max-height: 50px; max-width: 120px;"/>
+                            <div class="col-4 text-right">
+                                <strong>e-Invoice</strong>
+                                <div t-if="o.l10n_in_edi_signed_qr_code_image">
+                                    <img t-att-src="'data:image/png;base64,' + o.l10n_in_edi_signed_qr_code_image" 
+                                         style="width:120px;height:120px;border:1px solid #ccc;"/>
+                                </div>
                             </div>
-                            <strong style="font-size: 12px;"><span t-field="o.company_id.name"/></strong><br/>
-                            <span t-field="o.company_id.street"/><br/>
-                            <span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
-                            <span t-field="o.company_id.city"/>, <span t-field="o.company_id.state_id.name"/><br/>
-                            <span t-field="o.company_id.zip"/><br/>
-                            <strong>GSTIN/UIN:</strong> <span t-field="o.company_id.vat"/><br/>
-                            <strong>State Name:</strong> <span t-field="o.company_id.state_id.name"/>, 
-                            Code: <span t-field="o.company_id.state_id.l10n_in_tin"/>
-                        </t>
-                    </div>
-                </div>
+                        </div>
 
-                <div class="col-6" style="padding-left: 5px;">
-                    <table class="table table-sm table-bordered indian-invoice-table">
-                        <tr>
-                            <td width="50%"><strong>Invoice No.</strong></td>
-                            <td><span t-field="o.name"/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Dated</strong></td>
-                            <td><span t-field="o.invoice_date" t-options='{"format": "dd-MMM-yy"}'/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Delivery Note</strong></td>
-                            <td><span t-field="o.invoice_origin"/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Mode/Terms of Payment</strong></td>
-                            <td><span t-field="o.invoice_payment_term_id.name"/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Reference No.</strong></td>
-                            <td><span t-field="o.ref"/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Other References</strong></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </div>
+                        <hr style="border-top: 2px solid #000;"/>
 
-                <!-- Row 2: Consignee and Dispatch Details -->
-                <div class="col-6 mt-2" style="padding-right: 5px;">
-                    <div class="bordered-box" style="min-height: 160px; font-size: 10px;">
-                        <strong>Consignee (Ship to)</strong><br/>
-                        <t t-if="o.move_type in ['in_invoice', 'in_refund']">
-                            <!-- Company as Consignee for Purchases -->
-                            <span t-field="o.company_id.name"/><br/>
-                            <span t-field="o.company_id.street"/><br/>
-                            <span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
-                            <span t-field="o.company_id.city"/>, <span t-field="o.company_id.state_id.name"/><br/>
-                            <strong>GSTIN/UIN:</strong> <span t-field="o.company_id.vat"/><br/>
-                            <strong>State Name:</strong> <span t-field="o.company_id.state_id.name"/>, 
-                            Code: <span t-field="o.company_id.state_id.l10n_in_tin"/>
-                        </t>
-                        <t t-else="">
-                            <!-- Customer as Consignee for Sales -->
-                            <span t-field="o.partner_shipping_id.name" t-if="o.partner_shipping_id else o.partner_id.name"/><br/>
-                            <span t-field="o.partner_shipping_id.street" t-if="o.partner_shipping_id else o.partner_id.street"/><br/>
-                            <span t-if="(o.partner_shipping_id and o.partner_shipping_id.street2) or o.partner_id.street2"/><br/> 
-                            <span field="o.partner_shipping_id.street2" t-if="o.partner_shipping_id else o.partner_id.street2"/><br/>
-                            <t t-set="ship_partner" t-value="o.partner_shipping_id or o.partner_id"/>
-                            <span t-field="ship_partner.city"/>, <span t-field="ship_partner.state_id.name"/><br/>
-                            <strong>GSTIN/UIN:</strong> <span t-field="ship_partner.vat"/><br/>
-                            <strong>State Name:</strong> <span t-field="ship_partner.state_id.name"/>, 
-                            Code: <span t-field="ship_partner.state_id.l10n_in_tin"/>
-                        </t>
-                    </div>
-                </div>
+                        <!-- IRN and Acknowledgment Details -->
+                        <div class="row mt-2" style="font-size: 10px;">
+                            <div class="col-12">
+                                <table class="table-borderless" style="width:100%;">
+                                    <tr t-if="o.l10n_in_edi_irn">
+                                        <td width="12%"><strong>IRN</strong></td>
+                                        <td width="3%">:</td>
+                                        <td><span t-field="o.l10n_in_edi_irn"/></td>
+                                    </tr>
+                                    <tr t-if="o.l10n_in_edi_ack_no">
+                                        <td><strong>Ack No.</strong></td>
+                                        <td>:</td>
+                                        <td><span t-field="o.name"/></td>
+                                    </tr>
+                                    <tr t-if="o.invoice_date">
+                                        <td><strong>Ack Date</strong></td>
+                                        <td>:</td>
+                                        <td><span t-field="o.invoice_date" t-options='{"format": "dd-MMM-yy"}'/></td>
+                                    </tr>
+                                </table>
+                                <hr style="border-top: 2px solid #000;"/>
+                            </div>
+                        </div>
 
-                <div class="col-6 mt-2" style="padding-left: 5px;">
-                    <table class="table table-sm table-bordered indian-invoice-table">
-                        <tr>
-                            <td width="50%"><strong>Buyer's Order No.</strong></td>
-                            <td><span t-field="o.invoice_origin"/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Dated</strong></td>
-                            <td><span t-field="o.invoice_date" t-options='{"format": "dd-MMM-yy"}'/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Dispatch Doc No.</strong></td>
-                            <td><span t-field="o.name"/></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Delivery Note Date</strong></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Dispatched through</strong></td>
-                            <td>By Road</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Destination</strong></td>
-                            <td>
-                                <t t-if="o.move_type in ['in_invoice', 'in_refund']">
-                                    <span t-field="o.company_id.city"/>
-                                </t>
-                                <t t-else="">
-                                    <t t-set="dest_partner" t-value="o.partner_shipping_id or o.partner_id"/>
-                                    <span t-field="dest_partner.city"/>
-                                </t>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                        <!-- Supplier Information and Invoice Details -->
+                        <div class="row mt-3">
+                            <!-- Supplier Info (Left) -->
+                            <div class="col-6" style="padding-right: 5px;">
+                                <div class="bordered-box" style="min-height: 180px; font-size: 10px;">
+                                    <t t-if="o.move_type in ['in_invoice', 'in_refund']">
+                                        <!-- Vendor as Supplier for Purchase Bills -->
+                                        <div t-if="o.partner_id.image_1920" style="margin-bottom: 10px;">
+                                            <img t-att-src="image_data_uri(o.partner_id.image_1920)" 
+                                                 style="max-height: 50px; max-width: 120px;"/>
+                                        </div>
+                                        <strong style="font-size: 12px;"><span t-field="o.partner_id.name"/></strong><br/>
+                                        <span t-field="o.partner_id.street"/><br/>
+                                        <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br/>
+                                        <span t-field="o.partner_id.city"/>, <span t-field="o.partner_id.state_id.name"/><br/>
+                                        <span t-field="o.partner_id.zip"/><br/>
+                                        <strong>GSTIN/UIN:</strong> <span t-field="o.partner_id.vat"/><br/>
+                                        <strong>State Name:</strong> <span t-field="o.partner_id.state_id.name"/>, 
+                                        Code: <span t-field="o.partner_id.state_id.l10n_in_tin"/>
+                                    </t>
+                                    <t t-else="">
+                                        <!-- Company as Supplier for Sales Invoices -->
+                                        <div t-if="o.company_id.logo" style="margin-bottom: 10px;">
+                                            <img t-att-src="image_data_uri(o.company_id.logo)" 
+                                                 style="max-height: 50px; max-width: 120px;"/>
+                                        </div>
+                                        <strong style="font-size: 12px;"><span t-field="o.company_id.name"/></strong><br/>
+                                        <span t-field="o.company_id.street"/><br/>
+                                        <span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
+                                        <span t-field="o.company_id.city"/>, <span t-field="o.company_id.state_id.name"/><br/>
+                                        <span t-field="o.company_id.zip"/><br/>
+                                        <strong>GSTIN/UIN:</strong> <span t-field="o.company_id.vat"/><br/>
+                                        <strong>State Name:</strong> <span t-field="o.company_id.state_id.name"/>, 
+                                        Code: <span t-field="o.company_id.state_id.l10n_in_tin"/>
+                                    </t>
+                                </div>
+                            </div>
 
-                <!-- Row 3: Buyer and Transport Details -->
-                <div class="col-6 mt-2" style="padding-right: 5px;">
-                    <div class="bordered-box" style="min-height: 120px; font-size: 10px;">
-                        <strong>Buyer (Bill to)</strong><br/>
-                        <t t-if="o.move_type in ['in_invoice', 'in_refund']">
-                            <!-- Company as Buyer for Purchases -->
-                            <span t-field="o.company_id.name"/><br/>
-                            <span t-field="o.company_id.street"/><br/>
-                            <span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
-                            <span t-field="o.company_id.city"/>, <span t-field="o.company_id.state_id.name"/><br/>
-                            <strong>GSTIN/UIN:</strong> <span t-field="o.company_id.vat"/><br/>
-                            <strong>State Name:</strong> <span t-field="o.company_id.state_id.name"/>, 
-                            Code: <span t-field="o.company_id.state_id.l10n_in_tin"/>
-                        </t>
-                        <t t-else="">
-                            <!-- Customer as Buyer for Sales -->
-                            <span t-field="o.partner_id.name"/><br/>
-                            <span t-field="o.partner_id.street"/><br/>
-                            <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br/>
-                            <span t-field="o.partner_id.city"/>, <span t-field="o.partner_id.state_id.name"/><br/>
-                            <strong>GSTIN/UIN:</strong> <span t-field="o.partner_id.vat"/><br/>
-                            <strong>State Name:</strong> <span t-field="o.partner_id.state_id.name"/>, 
-                            Code: <span t-field="o.partner_id.state_id.l10n_in_tin"/>
-                        </t>
-                    </div>
-                </div>
+                            <!-- Invoice Details (Right) -->
+                            <div class="col-6" style="padding-left: 5px;">
+                                <table class="table table-sm table-bordered indian-invoice-table">
+                                    <tr>
+                                        <td width="50%"><strong>Invoice No.</strong></td>
+                                        <td><span t-field="o.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Dated</strong></td>
+                                        <td><span t-field="o.invoice_date" t-options='{"format": "dd-MMM-yy"}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Delivery Note</strong></td>
+                                        <td><span t-field="o.invoice_origin"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mode/Terms of Payment</strong></td>
+                                        <td><span t-field="o.invoice_payment_term_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Reference No.</strong></td>
+                                        <td><span t-field="o.ref"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Other References</strong></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
 
-                <div class="col-6 mt-2" style="padding-left: 5px;">
-                    <table class="table table-sm table-bordered indian-invoice-table">
-                        <tr>
-                            <td width="50%"><strong>Bill of Lading/LR-RR No.</strong></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Motor Vehicle No.</strong></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Terms of Delivery</strong></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </xpath>
+                        <!-- Consignee and Dispatch Details -->
+                        <div class="row mt-2">
+                            <!-- Consignee (Ship to) -->
+                            <div class="col-6" style="padding-right: 5px;">
+                                <div class="bordered-box" style="min-height: 160px; font-size: 10px;">
+                                    <strong>Consignee (Ship to)</strong><br/>
+                                    <t t-if="o.move_type in ['in_invoice', 'in_refund']">
+                                        <!-- Company as Consignee for Purchases -->
+                                        <span t-field="o.company_id.name"/><br/>
+                                        <span t-field="o.company_id.street"/><br/>
+                                        <span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
+                                        <span t-field="o.company_id.city"/>, <span t-field="o.company_id.state_id.name"/><br/>
+                                        <strong>GSTIN/UIN:</strong> <span t-field="o.company_id.vat"/><br/>
+                                        <strong>State Name:</strong> <span t-field="o.company_id.state_id.name"/>, 
+                                        Code: <span t-field="o.company_id.state_id.l10n_in_tin"/>
+                                    </t>
+                                    <t t-else="">
+                                        <!-- Customer as Consignee for Sales -->
+                                        <t t-set="ship_partner" t-value="o.partner_shipping_id or o.partner_id"/>
+                                        <span t-field="ship_partner.name"/><br/>
+                                        <span t-field="ship_partner.street"/><br/>
+                                        <span t-if="ship_partner.street2" t-field="ship_partner.street2"/><br/>
+                                        <span t-field="ship_partner.city"/>, <span t-field="ship_partner.state_id.name"/><br/>
+                                        <strong>GSTIN/UIN:</strong> <span t-field="ship_partner.vat"/><br/>
+                                        <strong>State Name:</strong> <span t-field="ship_partner.state_id.name"/>, 
+                                        Code: <span t-field="ship_partner.state_id.l10n_in_tin"/>
+                                    </t>
+                                </div>
+                            </div>
 
-        <!-- Replace the invoice lines table -->
-        <xpath expr="//table[@name='invoice_line_table']" position="replace">
-            <table name="invoice_line_table" class="table table-sm table-bordered mt-3 indian-invoice-table">
-                <thead style="background-color: #f0f0f0;">
-                    <tr>
-                        <th style="width: 4%; text-align: center;">Sl<br/>No.</th>
-                        <th style="width: 30%;">Description of Goods</th>
-                        <th style="width: 10%; text-align: center;">HSN/SAC</th>
-                        <th style="width: 10%; text-align: center;">Quantity</th>
-                        <th style="width: 10%; text-align: right;">Rate</th>
-                        <th style="width: 6%; text-align: center;">per</th>
-                        <th style="width: 8%; text-align: center;">Disc. %</th>
-                        <th style="width: 12%; text-align: right;">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <t t-set="line_index" t-value="0"/>
-                    <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
-                        <t t-set="line_index" t-value="line_index + 1"/>
-                        <tr>
-                            <td style="text-align: center;"><span t-esc="line_index"/></td>
-                            <td>
-                                <strong><span t-field="line.product_id.name" t-if="line.product_id else line.name"/></strong>
-                                <span t-if="line.product_id and line.name != line.product_id.name">
-                                    <br/><small><span t-field="line.name"/></small>
-                                </span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span t-field="line.product_id.l10n_in_hsn_code" t-if="line.product_id"/>
-                            </td>
-                            <td style="text-align: center;">
-                                <span t-field="line.quantity"/>
-                                <span groups="uom.group_uom"> <span t-field="line.product_uom_id"/></span>
-                            </td>
-                            <td style="text-align: right;">
-                                <span t-esc="'%.2f' % line.price_unit"/>
-                            </td>
-                            <td style="text-align: center;">
-                                <span groups="uom.group_uom" t-field="line.product_uom_id"/>
-                            </td>
-                            <td style="text-align: center;">
-                                <span t-esc="'%.2f' % line.discount" t-if="line.discount else '0.00'"/>
-                            </td>
-                            <td style="text-align: right;">
-                                <span t-esc="'%.2f' % line.price_subtotal"/>
-                            </td>
-                        </tr>
-                    </t>
+                            <!-- Dispatch Details -->
+                            <div class="col-6" style="padding-left: 5px;">
+                                <table class="table table-sm table-bordered indian-invoice-table">
+                                    <tr>
+                                        <td width="50%"><strong>Buyer's Order No.</strong></td>
+                                        <td><span t-field="o.invoice_origin"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Dated</strong></td>
+                                        <td><span t-field="o.invoice_date" t-options='{"format": "dd-MMM-yy"}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Dispatch Doc No.</strong></td>
+                                        <td><span t-field="o.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Delivery Note Date</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Dispatched through</strong></td>
+                                        <td>By Road</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Destination</strong></td>
+                                        <td>
+                                            <t t-if="o.move_type in ['in_invoice', 'in_refund']">
+                                                <span t-field="o.company_id.city"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-set="dest_partner" t-value="o.partner_shipping_id or o.partner_id"/>
+                                                <span t-field="dest_partner.city"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
 
-                    <!-- Tax Summary Row -->
-                    <tr style="border-top: 2px solid #000;">
-                        <td colspan="7" style="text-align: right;">
-                            <strong>
-                                Output IGST @ <span t-esc="'%.0f' % (o.amount_tax / o.amount_untaxed * 100 if o.amount_untaxed else 0)"/>%
-                            </strong>
-                        </td>
-                        <td style="text-align: right;">
-                            <strong><span t-esc="'%.0f' % (o.amount_tax / o.amount_untaxed * 100 if o.amount_untaxed else 0)"/> %</strong><br/>
-                            <strong><span t-esc="'%.2f' % o.amount_tax"/></strong>
-                        </td>
-                    </tr>
+                        <!-- Buyer and Transport Details -->
+                        <div class="row mt-2">
+                            <!-- Buyer (Bill to) -->
+                            <div class="col-6" style="padding-right: 5px;">
+                                <div class="bordered-box" style="min-height: 120px; font-size: 10px;">
+                                    <strong>Buyer (Bill to)</strong><br/>
+                                    <t t-if="o.move_type in ['in_invoice', 'in_refund']">
+                                        <!-- Company as Buyer for Purchases -->
+                                        <span t-field="o.company_id.name"/><br/>
+                                        <span t-field="o.company_id.street"/><br/>
+                                        <span t-if="o.company_id.street2" t-field="o.company_id.street2"/><br/>
+                                        <span t-field="o.company_id.city"/>, <span t-field="o.company_id.state_id.name"/><br/>
+                                        <strong>GSTIN/UIN:</strong> <span t-field="o.company_id.vat"/><br/>
+                                        <strong>State Name:</strong> <span t-field="o.company_id.state_id.name"/>, 
+                                        Code: <span t-field="o.company_id.state_id.l10n_in_tin"/>
+                                    </t>
+                                    <t t-else="">
+                                        <!-- Customer as Buyer for Sales -->
+                                        <span t-field="o.partner_id.name"/><br/>
+                                        <span t-field="o.partner_id.street"/><br/>
+                                        <span t-if="o.partner_id.street2" t-field="o.partner_id.street2"/><br/>
+                                        <span t-field="o.partner_id.city"/>, <span t-field="o.partner_id.state_id.name"/><br/>
+                                        <strong>GSTIN/UIN:</strong> <span t-field="o.partner_id.vat"/><br/>
+                                        <strong>State Name:</strong> <span t-field="o.partner_id.state_id.name"/>, 
+                                        Code: <span t-field="o.partner_id.state_id.l10n_in_tin"/>
+                                    </t>
+                                </div>
+                            </div>
 
-                    <!-- Total Row -->
-                    <tr style="background-color: #f0f0f0; font-weight: bold;">
-                        <td colspan="3"><strong>Total</strong></td>
-                        <td style="text-align: center;">
-                            <strong>
-                                <span t-esc="'%.2f' % sum(o.invoice_line_ids.filtered(lambda l: l.display_type == 'product').mapped('quantity'))"/> BDL
-                            </strong>
-                        </td>
-                        <td colspan="3"></td>
-                        <td style="text-align: right;">
-                            <strong>₹ <span t-esc="'%.2f' % o.amount_total"/></strong>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <!-- Transport Details -->
+                            <div class="col-6" style="padding-left: 5px;">
+                                <table class="table table-sm table-bordered indian-invoice-table">
+                                    <tr>
+                                        <td width="50%"><strong>Bill of Lading/LR-RR No.</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Motor Vehicle No.</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Terms of Delivery</strong></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
 
-            <!-- Amount in Words -->
-            <div class="row mt-2">
-                <div class="col-12" style="font-size: 10px; padding: 8px; border: 1px solid #ccc; background-color: #f9f9f9;">
-                    <strong>Amount Chargeable (in words)</strong><br/>
-                    <em><span t-field="o.amount_total_words"/></em>
-                </div>
-            </div>
-
-            <!-- HSN/SAC Summary -->
-            <div class="row mt-3">
-                <div class="col-12">
-                    <strong style="font-size: 11px;">HSN/SAC Summary</strong>
-                    <table class="table table-sm table-bordered indian-invoice-table mt-1">
-                        <thead style="background-color: #f0f0f0;">
-                            <tr>
-                                <th style="text-align: left;">HSN/SAC</th>
-                                <th style="text-align: right;">Taxable Value</th>
-                                <th style="text-align: center;">Rate %</th>
-                                <th style="text-align: right;">IGST Amount</th>
-                                <th style="text-align: right;">CGST Amount</th>
-                                <th style="text-align: right;">SGST Amount</th>
-                                <th style="text-align: right;">Total Tax Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-set="hsn_summary" t-value="{}"/>
-                            <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
-                                <t t-set="hsn_code" t-value="line.product_id.l10n_in_hsn_code if line.product_id else 'N/A'"/>
-                                <t t-set="tax_pct" t-value="sum(line.tax_ids.mapped('amount'))"/>
-                                <t t-set="line_tax" t-value="line.price_total - line.price_subtotal"/>
-                                
-                                <t t-if="hsn_code in hsn_summary">
-                                    <t t-set="hsn_summary[hsn_code]['taxable']" t-value="hsn_summary[hsn_code]['taxable'] + line.price_subtotal"/>
-                                    <t t-set="hsn_summary[hsn_code]['tax']" t-value="hsn_summary[hsn_code]['tax'] + line_tax"/>
-                                </t>
-                                <t t-else="">
-                                    <t t-set="hsn_summary" t-value="dict(hsn_summary, **{hsn_code: {'taxable': line.price_subtotal, 'tax': line_tax, 'rate': tax_pct}})"/>
-                                </t>
-                            </t>
-
-                            <t t-foreach="sorted(hsn_summary.items())" t-as="hsn_item">
+                        <!-- Invoice Lines Table -->
+                        <table class="table table-sm table-bordered mt-3 indian-invoice-table">
+                            <thead style="background-color: #f0f0f0;">
                                 <tr>
-                                    <td><span t-esc="hsn_item[0]"/></td>
-                                    <td style="text-align: right;"><span t-esc="'%.2f' % hsn_item[1]['taxable']"/></td>
-                                    <td style="text-align: center;"><span t-esc="'%.2f' % hsn_item[1]['rate']"/>%</td>
-                                    <td style="text-align: right;"><span t-esc="'%.2f' % hsn_item[1]['tax']"/></td>
-                                    <td style="text-align: right;">-</td>
-                                    <td style="text-align: right;">-</td>
-                                    <td style="text-align: right;"><span t-esc="'%.2f' % hsn_item[1]['tax']"/></td>
+                                    <th style="width: 4%; text-align: center;">Sl<br/>No.</th>
+                                    <th style="width: 30%;">Description of Goods</th>
+                                    <th style="width: 10%; text-align: center;">HSN/SAC</th>
+                                    <th style="width: 10%; text-align: center;">Quantity</th>
+                                    <th style="width: 10%; text-align: right;">Rate</th>
+                                    <th style="width: 6%; text-align: center;">per</th>
+                                    <th style="width: 8%; text-align: center;">Disc. %</th>
+                                    <th style="width: 12%; text-align: right;">Amount</th>
                                 </tr>
-                            </t>
+                            </thead>
+                            <tbody>
+                                <t t-set="line_index" t-value="0"/>
+                                <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                                    <t t-set="line_index" t-value="line_index + 1"/>
+                                    <tr>
+                                        <td style="text-align: center;"><span t-esc="line_index"/></td>
+                                        <td>
+                                            <strong><span t-field="line.product_id.name" t-if="line.product_id else line.name"/></strong>
+                                            <span t-if="line.product_id and line.name != line.product_id.name">
+                                                <br/><small><span t-field="line.name"/></small>
+                                            </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span t-field="line.product_id.l10n_in_hsn_code" t-if="line.product_id"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span t-esc="'%.2f' % line.quantity"/>
+                                            <span groups="uom.group_uom"> <span t-field="line.product_uom_id"/></span>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <span t-esc="'%.2f' % line.price_unit"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span groups="uom.group_uom" t-field="line.product_uom_id"/>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span t-esc="'%.2f' % line.discount" t-if="line.discount else '0.00'"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <span t-esc="'%.2f' % line.price_subtotal"/>
+                                        </td>
+                                    </tr>
+                                </t>
 
-                            <!-- HSN Total Row -->
-                            <tr style="font-weight: bold; background-color: #f0f0f0;">
-                                <td><strong>Total</strong></td>
-                                <td style="text-align: right;"><strong><span t-esc="'%.2f' % o.amount_untaxed"/></strong></td>
-                                <td></td>
-                                <td style="text-align: right;"><strong><span t-esc="'%.2f' % o.amount_tax"/></strong></td>
-                                <td style="text-align: right;"><strong>-</strong></td>
-                                <td style="text-align: right;"><strong>-</strong></td>
-                                <td style="text-align: right;"><strong><span t-esc="'%.2f' % o.amount_tax"/></strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                <!-- Tax Summary Row -->
+                                <tr style="border-top: 2px solid #000;">
+                                    <td colspan="7" style="text-align: right;">
+                                        <strong>
+                                            Output IGST @ <span t-esc="'%.0f' % (o.amount_tax / o.amount_untaxed * 100 if o.amount_untaxed else 0)"/>%
+                                        </strong>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <strong><span t-esc="'%.0f' % (o.amount_tax / o.amount_untaxed * 100 if o.amount_untaxed else 0)"/> %</strong><br/>
+                                        <strong><span t-esc="'%.2f' % o.amount_tax"/></strong>
+                                    </td>
+                                </tr>
 
-            <!-- Tax Amount in Words -->
-            <div class="row mt-2">
-                <div class="col-12" style="font-size: 10px;">
-                    <strong>Tax Amount (in words):</strong>
-                    <span t-field="o.amount_tax_words"/>
-                </div>
-            </div>
+                                <!-- Total Row -->
+                                <tr style="background-color: #f0f0f0; font-weight: bold;">
+                                    <td colspan="3"><strong>Total</strong></td>
+                                    <td style="text-align: center;">
+                                        <strong>
+                                            <span t-esc="'%.2f' % sum(o.invoice_line_ids.filtered(lambda l: l.display_type == 'product').mapped('quantity'))"/> BDL
+                                        </strong>
+                                    </td>
+                                    <td colspan="3"></td>
+                                    <td style="text-align: right;">
+                                        <strong>₹ <span t-esc="'%.2f' % o.amount_total"/></strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-            <!-- Remarks -->
-            <div class="row mt-2" t-if="o.narration">
-                <div class="col-12" style="font-size: 9px; padding: 5px;">
-                    <strong>Remarks:</strong><br/>
-                    <span t-field="o.narration"/>
-                </div>
-            </div>
+                        <!-- Amount in Words -->
+                        <div class="row mt-2">
+                            <div class="col-12" style="font-size: 10px; padding: 8px; border: 1px solid #ccc; background-color: #f9f9f9;">
+                                <strong>Amount Chargeable (in words)</strong><br/>
+                                <em><span t-field="o.amount_total_words"/></em>
+                            </div>
+                        </div>
 
-            <!-- Footer: Company Details and Signature -->
-            <div class="row mt-3" style="font-size: 10px;">
-                <div class="col-7">
-                    <t t-if="o.move_type in ['in_invoice', 'in_refund']">
-                        <strong>Company's VAT TIN:</strong> <span t-field="o.partner_id.vat"/><br/>
-                        <strong>Company's CST No.:</strong> <span t-field="o.partner_id.l10n_in_pan"/><br/>
-                    </t>
-                    <t t-else="">
-                        <strong>Company's VAT TIN:</strong> <span t-field="o.company_id.vat"/><br/>
-                        <strong>Company's CST No.:</strong> <span t-field="o.company_id.l10n_in_pan"/><br/>
-                    </t>
-                    <div class="mt-2">
-                        <strong>Declaration</strong><br/>
-                        We declare that this invoice shows the actual price of the<br/>
-                        goods described and that all particulars are true and correct.<br/>
-                        And the country of origin of shipped by the manufacturer is India.
+                        <!-- HSN/SAC Summary -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <strong style="font-size: 11px;">HSN/SAC Summary</strong>
+                                <table class="table table-sm table-bordered indian-invoice-table mt-1">
+                                    <thead style="background-color: #f0f0f0;">
+                                        <tr>
+                                            <th style="text-align: left;">HSN/SAC</th>
+                                            <th style="text-align: right;">Taxable Value</th>
+                                            <th style="text-align: center;">Rate %</th>
+                                            <th style="text-align: right;">IGST Amount</th>
+                                            <th style="text-align: right;">CGST Amount</th>
+                                            <th style="text-align: right;">SGST Amount</th>
+                                            <th style="text-align: right;">Total Tax Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="hsn_summary" t-value="{}"/>
+                                        <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                                            <t t-set="hsn_code" t-value="line.product_id.l10n_in_hsn_code if line.product_id else 'N/A'"/>
+                                            <t t-set="tax_pct" t-value="sum(line.tax_ids.mapped('amount'))"/>
+                                            <t t-set="line_tax" t-value="line.price_total - line.price_subtotal"/>
+                                            
+                                            <t t-if="hsn_code in hsn_summary">
+                                                <t t-set="hsn_summary[hsn_code]['taxable']" t-value="hsn_summary[hsn_code]['taxable'] + line.price_subtotal"/>
+                                                <t t-set="hsn_summary[hsn_code]['tax']" t-value="hsn_summary[hsn_code]['tax'] + line_tax"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-set="hsn_summary" t-value="dict(hsn_summary, **{hsn_code: {'taxable': line.price_subtotal, 'tax': line_tax, 'rate': tax_pct}})"/>
+                                            </t>
+                                        </t>
+
+                                        <t t-foreach="sorted(hsn_summary.items())" t-as="hsn_item">
+                                            <tr>
+                                                <td><span t-esc="hsn_item[0]"/></td>
+                                                <td style="text-align: right;"><span t-esc="'%.2f' % hsn_item[1]['taxable']"/></td>
+                                                <td style="text-align: center;"><span t-esc="'%.2f' % hsn_item[1]['rate']"/>%</td>
+                                                <td style="text-align: right;"><span t-esc="'%.2f' % hsn_item[1]['tax']"/></td>
+                                                <td style="text-align: right;">-</td>
+                                                <td style="text-align: right;">-</td>
+                                                <td style="text-align: right;"><span t-esc="'%.2f' % hsn_item[1]['tax']"/></td>
+                                            </tr>
+                                        </t>
+
+                                        <!-- HSN Total Row -->
+                                        <tr style="font-weight: bold; background-color: #f0f0f0;">
+                                            <td><strong>Total</strong></td>
+                                            <td style="text-align: right;"><strong><span t-esc="'%.2f' % o.amount_untaxed"/></strong></td>
+                                            <td></td>
+                                            <td style="text-align: right;"><strong><span t-esc="'%.2f' % o.amount_tax"/></strong></td>
+                                            <td style="text-align: right;"><strong>-</strong></td>
+                                            <td style="text-align: right;"><strong>-</strong></td>
+                                            <td style="text-align: right;"><strong><span t-esc="'%.2f' % o.amount_tax"/></strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tax Amount in Words -->
+                        <div class="row mt-2">
+                            <div class="col-12" style="font-size: 10px;">
+                                <strong>Tax Amount (in words):</strong>
+                                <span t-field="o.amount_tax_words"/>
+                            </div>
+                        </div>
+
+                        <!-- Remarks -->
+                        <div class="row mt-2" t-if="o.narration">
+                            <div class="col-12" style="font-size: 9px; padding: 5px;">
+                                <strong>Remarks:</strong><br/>
+                                <span t-field="o.narration"/>
+                            </div>
+                        </div>
+
+                        <!-- Footer: Company Details and Signature -->
+                        <div class="row mt-3" style="font-size: 10px;">
+                            <div class="col-7">
+                                <t t-if="o.move_type in ['in_invoice', 'in_refund']">
+                                    <strong>Company's VAT TIN:</strong> <span t-field="o.partner_id.vat"/><br/>
+                                    <strong>Company's CST No.:</strong> <span t-field="o.partner_id.l10n_in_pan"/><br/>
+                                </t>
+                                <t t-else="">
+                                    <strong>Company's VAT TIN:</strong> <span t-field="o.company_id.vat"/><br/>
+                                    <strong>Company's CST No.:</strong> <span t-field="o.company_id.l10n_in_pan"/><br/>
+                                </t>
+                                <div class="mt-2">
+                                    <strong>Declaration</strong><br/>
+                                    We declare that this invoice shows the actual price of the<br/>
+                                    goods described and that all particulars are true and correct.<br/>
+                                    And the country of origin of shipped by the manufacturer is India.
+                                </div>
+                            </div>
+                            <div class="col-5 text-right">
+                                <t t-if="o.move_type in ['in_invoice', 'in_refund']">
+                                    <strong>for <span t-field="o.partner_id.name"/></strong>
+                                </t>
+                                <t t-else="">
+                                    <strong>for <span t-field="o.company_id.name"/></strong>
+                                </t>
+                                <br/><br/><br/><br/>
+                                <strong>Authorised Signatory</strong>
+                            </div>
+                        </div>
+
+                        <!-- Computer Generated Invoice -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size: 9px;">
+                                <em>This is a Computer Generated Invoice</em>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-                <div class="col-5 text-right">
-                    <t t-if="o.move_type in ['in_invoice', 'in_refund']">
-                        <strong>for <span t-field="o.partner_id.name"/></strong>
-                    </t>
-                    <t t-else="">
-                        <strong>for <span t-field="o.company_id.name"/></strong>
-                    </t>
-                    <br/><br/><br/><br/>
-                    <strong>Authorised Signatory</strong>
-                </div>
-            </div>
-
-            <!-- Computer Generated Invoice -->
-            <div class="row mt-4">
-                <div class="col-12 text-center" style="font-size: 9px;">
-                    <em>This is a Computer Generated Invoice</em>
-                </div>
-            </div>
-        </xpath>
+                </t>
+            </t>
+        </t>
     </template>
+
+    <!-- Report Action Definition -->
+    <record id="action_report_invoice_indian_gst" model="ir.actions.report">
+        <field name="name">GST Tax Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">indian_gst_invoice.report_invoice_indian_gst</field>
+        <field name="report_file">indian_gst_invoice.report_invoice_indian_gst</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
 </odoo>

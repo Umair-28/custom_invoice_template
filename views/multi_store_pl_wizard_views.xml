@@ -10,7 +10,7 @@
                     <group>
                         <field name="date_from"/>
                         <field name="date_to"/>
-                        <field name="report_format" widget="radio"/>
+                        <!-- <field name="report_format" widget="radio"/> -->
                     </group>
                     <group>
                         <field name="cin_number" placeholder="e.g., CIN-U74999DL1995PLC065160"/>

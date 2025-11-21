@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Wizard Form View -->
     <record id="view_multi_store_pl_wizard_form" model="ir.ui.view">
@@ -9,6 +10,7 @@
                     <group>
                         <field name="date_from"/>
                         <field name="date_to"/>
+                        <field name="report_format" widget="radio"/>
                     </group>
                     <group>
                         <field name="cin_number" placeholder="e.g., CIN-U74999DL1995PLC065160"/>
@@ -42,3 +44,47 @@
           groups="account.group_account_readonly,account.group_account_invoice"
           sequence="50"/>
 </odoo>
+<!-- <odoo>
+    
+    <record id="view_multi_store_pl_wizard_form" model="ir.ui.view">
+        <field name="name">multi.store.pl.wizard.form</field>
+        <field name="model">multi.store.pl.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Multi-Store P&amp;L Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="cin_number" placeholder="e.g., CIN-U74999DL1995PLC065160"/>
+                        <field name="company_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate_report"
+                            string="Generate Report"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    
+    <record id="action_multi_store_pl_wizard" model="ir.actions.act_window">
+        <field name="name">Multi-Store P&amp;L Report</field>
+        <field name="res_model">multi.store.pl.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    
+    <menuitem id="menu_multi_store_pl_report"
+          name="Multi-Store PL Report"
+          parent="account.menu_finance_reports"
+          action="action_multi_store_pl_wizard"
+          groups="account.group_account_readonly,account.group_account_invoice"
+          sequence="50"/>
+</odoo> -->

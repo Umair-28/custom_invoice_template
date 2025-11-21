@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- PDF Report Definition -->
+    <record id="report_multi_store_pl" model="ir.actions.report">
+        <field name="name">Multi-Store P&amp;L Report</field>
+        <field name="model">multi.store.pl.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_invoice_template.report_multi_store_pl_document</field>
+        <field name="report_file">custom_invoice_template.report_multi_store_pl_document</field>
+        <field name="binding_model_id" ref="model_multi_store_pl_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- PDF Template -->
+    <template id="report_multi_store_pl_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .pl-report-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 9pt;
+                            }
+                            .pl-report-table th,
+                            .pl-report-table td {
+                                border: 1px solid #000;
+                                padding: 4px 6px;
+                                text-align: right;
+                            }
+                            .pl-report-table th {
+                                background-color: #D3D3D3;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                            .pl-report-table td.label {
+                                text-align: left;
+                                width: 40%;
+                            }
+                            .pl-report-table tr.section-header td {
+                                background-color: #E8E8E8;
+                                font-weight: bold;
+                                text-align: left;
+                            }
+                            .pl-report-table tr.total-row td {
+                                background-color: #E8E8E8;
+                                font-weight: bold;
+                            }
+                            .report-title {
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 12pt;
+                                margin-bottom: 5px;
+                                border: 1px solid #000;
+                                padding: 8px;
+                            }
+                            .report-subtitle {
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 11pt;
+                                margin-bottom: 15px;
+                                border: 1px solid #000;
+                                padding: 8px;
+                            }
+                        </style>
+
+                        <!-- Report Header -->
+                        <div class="report-title">
+                            <t t-esc="cin"/> <t t-esc="company_name"/>
+                        </div>
+                        <div class="report-subtitle">
+                            STATEMENT OF PROFIT AND LOSS ACCOUNT FOR THE YEAR ENDED <t t-esc="doc.date_to.strftime('%dst %B %Y')"/>
+                        </div>
+
+                        <!-- Main Table -->
+                        <table class="pl-report-table">
+                            <!-- Column Headers -->
+                            <thead>
+                                <tr>
+                                    <th>Particulars</th>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <th><t t-esc="comp_name"/></th>
+                                    </t>
+                                    <th>For the year ended<br/><t t-esc="doc.date_to.strftime('%dst %B, %Y')"/><br/>Rs.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- INCOME Section -->
+                                <tr class="section-header">
+                                    <td colspan="100">INCOME</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">I    Revenue from operations</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['revenue_from_operations'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['revenue_from_operations'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">II   Other Income</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['other_income'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['other_income'])"/></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td class="label">III  TOTAL INCOME (I + II)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['total_income'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['total_income'])"/></td>
+                                </tr>
+
+                                <!-- Empty Row -->
+                                <tr><td colspan="100" style="border: none; height: 10px;"></td></tr>
+
+                                <!-- EXPENSES Section -->
+                                <tr class="section-header">
+                                    <td colspan="100">IV   EXPENSES</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(a) Cost of materials consumed</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['cost_of_materials'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['cost_of_materials'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(b) Purchases of Stock in Trade</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['purchases_of_stock'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['purchases_of_stock'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(c) Changes in inventories of finished goods</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['changes_in_inventory'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['changes_in_inventory'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(d) Employee benefits expenses</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['employee_benefits'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['employee_benefits'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(e) Direct Expenses</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['direct_expenses'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['direct_expenses'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(f) Finance costs/benefits expenses</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['finance_costs'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['finance_costs'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(g) Depreciation and amortisation expenses</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['depreciation'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['depreciation'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(h) Freight Charges</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['freight_charges'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['freight_charges'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">(i) Other expenses</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['other_expenses'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['other_expenses'])"/></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td class="label">TOTAL EXPENSES</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['total_expenses'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['total_expenses'])"/></td>
+                                </tr>
+
+                                <!-- Empty Row -->
+                                <tr><td colspan="100" style="border: none; height: 10px;"></td></tr>
+
+                                <!-- Profit Calculations -->
+                                <tr>
+                                    <td class="label">V    Profit before exceptional and extraordinary items and tax (III-IV)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['profit_before_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['profit_before_tax'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">VI   Exceptional items</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">VII  Profit before extraordinary items and tax (V - VI)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['profit_before_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['profit_before_tax'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">VIII Extraordinary Items</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">IX   Profit before tax (VII-VIII)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['profit_before_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['profit_before_tax'])"/></td>
+                                </tr>
+
+                                <!-- Tax Section -->
+                                <tr class="section-header">
+                                    <td colspan="100">X    Tax Expense:</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">     (a) Current tax expense</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['current_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['current_tax'])"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">     (b) Deferred tax</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['deferred_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['deferred_tax'])"/></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td class="label">XI   Profit / (Loss) from continuing operations (IX-X)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['profit_after_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['profit_after_tax'])"/></td>
+                                </tr>
+
+                                <!-- Empty Row -->
+                                <tr><td colspan="100" style="border: none; height: 10px;"></td></tr>
+
+                                <!-- Discontinuing Operations -->
+                                <tr>
+                                    <td class="label">XII  Profit/(loss) from discontinuing operations</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">XIII Tax expense of discontinuing operations</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">XIV  Profit/(loss) from Discontinuing operations (after tax)(XII - XIII)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td class="label">XV   Profit / (Loss) (XI+XIV)</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td><t t-esc="'{:,.2f}'.format(stores_data[comp_name]['profit_after_tax'])"/></td>
+                                    </t>
+                                    <td><t t-esc="'{:,.2f}'.format(totals['profit_after_tax'])"/></td>
+                                </tr>
+
+                                <!-- Empty Row -->
+                                <tr><td colspan="100" style="border: none; height: 10px;"></td></tr>
+
+                                <!-- Earnings Per Share -->
+                                <tr class="section-header">
+                                    <td colspan="100">XVI  Earning per equity share:</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">     (1) Basic</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">     (2) Diluted</td>
+                                    <t t-foreach="company_names" t-as="comp_name">
+                                        <td>0.00</td>
+                                    </t>
+                                    <td>0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

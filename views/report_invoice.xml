@@ -467,6 +467,7 @@ No.</th>
                         </div>
 
                         <!-- HSN/SAC Summary -->
+                        <!-- HSN/SAC Summary -->
                         <div class="row mt-3">
                             <div class="col-12">
                                 <strong style="font-size: 11px;">HSN/SAC Summary</strong>
@@ -483,39 +484,41 @@ No.</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <t t-set="hsn_summary" t-value="{}"/>
+                                        <!-- Build HSN summary using Python expression -->
+                                        <t t-set="hsn_data" t-value="{}"/>
                                         <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
-                                            <t t-set="hsn_code" t-value="line.product_id.l10n_in_hsn_code if line.product_id else 'N/A'"/>
-                                            <t t-set="tax_pct" t-value="sum(line.tax_ids.mapped('amount'))"/>
-                                            <t t-set="line_tax" t-value="line.price_total - line.price_subtotal"/>
+                                            <t t-set="hsn" t-value="line.product_id.l10n_in_hsn_code if line.product_id else 'N/A'"/>
+                                            <t t-set="rate" t-value="sum(line.tax_ids.mapped('amount'))"/>
+                                            <t t-set="tax_amt" t-value="line.price_total - line.price_subtotal"/>
 
-                                            <t t-if="hsn_code in hsn_summary">
-                                                <t t-set="hsn_summary[hsn_code]['taxable']" t-value="hsn_summary[hsn_code]['taxable'] + line.price_subtotal"/>
-                                                <t t-set="hsn_summary[hsn_code]['tax']" t-value="hsn_summary[hsn_code]['tax'] + line_tax"/>
+                                            <t t-if="hsn not in hsn_data">
+                                                <t t-set="hsn_data" t-value="dict(hsn_data, **{hsn: {'taxable': line.price_subtotal, 'tax': tax_amt, 'rate': rate}})"/>
                                             </t>
                                             <t t-else="">
-                                                <t t-set="hsn_summary" t-value="dict(hsn_summary, **{hsn_code: {'taxable': line.price_subtotal, 'tax': line_tax, 'rate': tax_pct}})"/>
+                                                <t t-set="existing" t-value="hsn_data[hsn]"/>
+                                                <t t-set="hsn_data" t-value="dict(hsn_data, **{hsn: {'taxable': existing['taxable'] + line.price_subtotal, 'tax': existing['tax'] + tax_amt, 'rate': rate}})"/>
                                             </t>
                                         </t>
 
-                                        <t t-foreach="sorted(hsn_summary.items())" t-as="hsn_item">
+                                        <!-- Display HSN rows -->
+                                        <t t-foreach="sorted(hsn_data.items())" t-as="hsn_row">
                                             <tr>
                                                 <td>
-                                                    <span t-esc="hsn_item[0]"/>
+                                                    <span t-esc="hsn_row[0]"/>
                                                 </td>
                                                 <td style="text-align: right;">
-                                                    <span t-esc="'%.2f' % hsn_item[1]['taxable']"/>
+                                                    <span t-esc="'%.2f' % hsn_row[1]['taxable']"/>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <span t-esc="'%.2f' % hsn_item[1]['rate']"/>
+                                                    <span t-esc="'%.2f' % hsn_row[1]['rate']"/>
 %</td>
                                                 <td style="text-align: right;">
-                                                    <span t-esc="'%.2f' % hsn_item[1]['tax']"/>
+                                                    <span t-esc="'%.2f' % hsn_row[1]['tax']"/>
                                                 </td>
                                                 <td style="text-align: right;">-</td>
                                                 <td style="text-align: right;">-</td>
                                                 <td style="text-align: right;">
-                                                    <span t-esc="'%.2f' % hsn_item[1]['tax']"/>
+                                                    <span t-esc="'%.2f' % hsn_row[1]['tax']"/>
                                                 </td>
                                             </tr>
                                         </t>

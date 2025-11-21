@@ -55,7 +55,7 @@ class AccountReport(models.AbstractModel):
         
         for record in income_results:
             balance = abs(record['balance'])
-            name_lower = str(record['name'] or '').lower() # Safety fix
+            name_lower = str(record['name'] or '').lower()
             
             if record['account_type'] == 'income':
                 store_data['revenue_from_operations'] += balance
@@ -79,7 +79,7 @@ class AccountReport(models.AbstractModel):
                 AND am.company_id = %s
                 AND am.date >= %s
                 AND am.date <= %s
-                AND aa.account_type LIKE 'expense%'
+                AND aa.account_type LIKE 'expense%%'
             GROUP BY aa.account_type, aa.name, aa.code
         '''
         
@@ -88,12 +88,9 @@ class AccountReport(models.AbstractModel):
         
         for record in expense_results:
             balance = abs(record['balance'])
-            name_lower = str(record['name'] or '').lower() # Safety fix
-            # ... (rest of the expense categorization logic remains the same)
-            # ... (omitted for brevity, assume correct)
-
-            # Categorize expenses by keywords (This block is retained for functionality)
-            # ----------------------------------------------------------------------
+            name_lower = str(record['name'] or '').lower()
+            
+            # Categorize expenses by keywords
             if any(keyword in name_lower for keyword in ['material', 'raw material', 'cogs']):
                 store_data['cost_of_materials'] += balance
             elif any(keyword in name_lower for keyword in ['purchase', 'stock', 'merchandise']):
@@ -112,7 +109,6 @@ class AccountReport(models.AbstractModel):
                 store_data['direct_expenses'] += balance
             else:
                 store_data['other_expenses'] += balance
-            # ----------------------------------------------------------------------
 
         store_data['total_expenses'] = sum([
             store_data['cost_of_materials'],

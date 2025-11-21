@@ -9,7 +9,7 @@
     <record id="view_inherit_multi_store_pl_dashboard_button" model="ir.ui.view">
         <field name="name">account.journal.kanban.inherit.wizard.button</field>
         <field name="model">account.journal</field>
-        <field name="inherit_id" ref="account.view_account_journal_kanban"/> 
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/> 
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="%(action_multi_store_pl_wizard)d"

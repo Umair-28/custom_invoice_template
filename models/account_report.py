@@ -69,7 +69,6 @@ class AccountReport(models.AbstractModel):
             SELECT 
                 aa.account_type,
                 aa.name,
-                aa.code,
                 SUM(aml.balance) as balance
             FROM account_move_line aml
             JOIN account_account aa ON aa.id = aml.account_id
@@ -80,7 +79,7 @@ class AccountReport(models.AbstractModel):
                 AND am.date >= %s
                 AND am.date <= %s
                 AND aa.account_type LIKE 'expense%%'
-            GROUP BY aa.account_type, aa.name, aa.code
+            GROUP BY aa.account_type, aa.name
         '''
         
         self.env.cr.execute(expense_query, (company_id, date_from, date_to))

@@ -21,9 +21,9 @@
                             </div>
                             <div class="col-4 text-right">
                                 <strong>e-Invoice</strong>
-                                <div t-if="hasattr(o, 'l10n_in_edi_signed_qr_code_image') and o.l10n_in_edi_signed_qr_code_image">
+                                <!-- <div t-if="hasattr(o, 'l10n_in_edi_signed_qr_code_image') and o.l10n_in_edi_signed_qr_code_image">
                                     <img t-att-src="'data:image/png;base64,' + o.l10n_in_edi_signed_qr_code_image" style="width:120px;height:120px;border:1px solid #ccc;"/>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 

@@ -631,8 +631,8 @@ No.</th>
     <field name="name">GST Tax Invoice</field>
     <field name="model">account.move</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">indian_gst_invoice.report_invoice_indian_gst</field>
-    <field name="report_file">indian_gst_invoice.report_invoice_indian_gst</field>
+    <field name="report_name">custom_invoice_template.report_invoice_indian_gst</field>
+    <field name="report_file">custom_invoice_template.report_invoice_indian_gst</field>
     <field name="binding_model_id" ref="account.model_account_move"/>
     <field name="binding_type">report</field>
     <field name="paperformat_id" ref="base.paperformat_euro"/>

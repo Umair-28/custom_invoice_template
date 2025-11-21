@@ -134,7 +134,8 @@ class AccountReport(models.AbstractModel):
                 AND am.company_id = %s
                 AND am.date >= %s
                 AND am.date <= %s
-                AND (aa.name ILIKE '%%tax expense%%' OR aa.name ILIKE '%%income tax%%')
+                AND aa.account_type IN ('expense', 'expense_depreciation', 'expense_direct_cost')
+                AND (CAST(aa.name AS TEXT) ILIKE '%%tax expense%%' OR CAST(aa.name AS TEXT) ILIKE '%%income tax%%')
         '''
         
         self.env.cr.execute(tax_query, (company_id, date_from, date_to))

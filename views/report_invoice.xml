@@ -635,6 +635,6 @@ No.</th>
     <field name="report_file">custom_invoice_template.report_invoice_indian_gst</field>
     <field name="binding_model_id" ref="account.model_account_move"/>
     <field name="binding_type">report</field>
-    <field name="paperformat_id" ref="base.paperformat_euro"/>
+    <field name="paperformat_id" ref="base.paperformat_a4"/>
 </record>
 </odoo>

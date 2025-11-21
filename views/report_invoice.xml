@@ -13,7 +13,7 @@
         </xpath>
 
         <!-- Replace the invoice title section -->
-        <xpath expr="//h2[@class='mt-4']" position="replace">
+        <xpath expr="//h2[@class='mt-4']" position="before">
             <div class="row">
                 <div class="col-8">
                     <h3><strong>Tax Invoice</strong></h3>

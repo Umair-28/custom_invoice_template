@@ -16,9 +16,9 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="action_generate_report" 
-                            string="Generate Report" 
-                            type="object" 
+                    <button name="action_generate_report"
+                            string="Generate Report"
+                            type="object"
                             class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
@@ -34,11 +34,10 @@
         <field name="target">new</field>
     </record>
 
-    <!-- Menu Item under Accounting -> Reporting -> Financial Reports -->
+    <!-- Menu Item under Accounting -> Reporting -> Management -->
     <menuitem id="menu_multi_store_pl_report"
-          name="Multi-Store PL Report"
-          parent="account_reports_management_menu"
-          action="action_multi_store_pl_wizard"
-          sequence="10"/>
-
+              name="Multi-Store P&amp;L Report"
+              parent="account_reports_management_menu"
+              action="action_multi_store_pl_wizard"
+              sequence="10"/>
 </odoo>

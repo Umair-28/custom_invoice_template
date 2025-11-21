@@ -34,11 +34,10 @@
         <field name="target">new</field>
     </record>
 
-    <!-- Menu Item -->
+    <!-- Menu Item under Accounting -> Reporting -> Financial Reports -->
     <menuitem id="menu_multi_store_pl_report"
-          name="Multi-Store PL Report"
-          parent="account.menu_finance_reports_root"
-          action="action_multi_store_pl_wizard"
-          sequence="1"/>
-
+              name="Multi-Store PL Report"
+              parent="account.menu_finance_reports"
+              action="action_multi_store_pl_wizard"
+              sequence="10"/>
 </odoo>

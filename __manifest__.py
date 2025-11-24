@@ -32,6 +32,7 @@
         'views/report_invoice.xml',
         'views/multi_store_pl_wizard_views.xml',
         'views/report_multi_store_pl_template.xml',
+        'views/account_move_view.xml',
     ],
     'installable': True,
     'application': False,

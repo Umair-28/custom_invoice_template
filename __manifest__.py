@@ -29,6 +29,7 @@
         'account_reports'
     ],
     'data': [
+        'data/account_tags.xml', 
         'views/report_invoice.xml',
         'views/multi_store_pl_wizard_views.xml',
         'views/report_multi_store_pl_template.xml',

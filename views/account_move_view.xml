@@ -23,14 +23,14 @@
                 <field name="vehicle_no"/>
                 <field name="delivery_terms"/>
 
-                <group string="Consignee (Ship to)">
+                <!-- <group string="Consignee (Ship to)"> -->
                     <field name="consignee_name"/>
                     <field name="consignee_address"/>
                     <field name="consigness_gst"/>
                     <field name="consignee_state"/>
                     <field name="consigness_code"/>
 
-                </group>
+                <!-- </group> -->
 
 
 

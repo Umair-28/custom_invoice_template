@@ -22,7 +22,7 @@
     """,
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
-    "post_load": "hooks.create_store_accounts.post_init_hook",
+    "post_load": "post_init_hook",
     'depends': [
         'account',
         'l10n_in',

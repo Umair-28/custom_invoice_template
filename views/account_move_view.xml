@@ -6,38 +6,42 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add fields after invoice date -->
             <xpath expr="//field[@name='invoice_date']" position="after">
-                <!-- <group string="Dispatch Details"> -->
-                <field name="delivery_note"/>
-                <field name="mode_of_payment"/>
-                <field name="ref_no"/>
-                <field name="other_ref"/>
 
-                <field name="buyer_order_no"/>
-                <field name="dispatch_doc_no"/>
-                <field name="delivery_note_date"/>
-                <field name="dispatch_through"/>
-                <field name="destination"/>
-                <field name="bill_of_landing"/>
-                <field name="vehicle_no"/>
-                <field name="delivery_terms"/>
+                <group string="Additional Invoice Details" col="4">
 
-                <group string="Consignee (Ship to)">
-                    <field name="consignee_name"/>
-                    <field name="consignee_address"/>
-                    <field name="consigness_gst"/>
-                    <field name="consignee_state"/>
-                    <field name="consigness_code"/>
+                    <!-- Left Column -->
+                    <group col="2">
+                        <field name="delivery_note"/>
+                        <field name="mode_of_payment"/>
+                        <field name="ref_no"/>
+                        <field name="other_ref"/>
+
+                        <field name="buyer_order_no"/>
+                        <field name="dispatch_doc_no"/>
+                        <field name="delivery_note_date"/>
+                        <field name="dispatch_through"/>
+                        <field name="destination"/>
+                    </group>
+
+                    <!-- Right Column -->
+                    <group col="2">
+                        <field name="bill_of_landing"/>
+                        <field name="vehicle_no"/>
+                        <field name="delivery_terms"/>
+
+                        <separator string="Consignee (Ship To)"/>
+
+                        <field name="consignee_name"/>
+                        <field name="consignee_address"/>
+                        <field name="consigness_gst"/>
+                        <field name="consignee_state"/>
+                        <field name="consigness_code"/>
+                    </group>
 
                 </group>
 
-
-
-
-                <!-- </group> -->
             </xpath>
-
 
         </field>
     </record>

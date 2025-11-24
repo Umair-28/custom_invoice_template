@@ -108,14 +108,10 @@ def create_store_accounts(env):
     _logger.info("🎉 All store accounts have been processed successfully!")
 
 
-def post_init_hook():
-    """
-    Hook called after all modules are loaded.
-    Safe for accessing fields like account.account.company_id
-    """
-    import odoo
-    env = odoo.api.Environment(odoo.registry(odoo.tools.config.odoo18).cursor(), SUPERUSER_ID, {})
-    _logger.info("🔧 Running post_load hook for custom invoice module...")
+def post_init_hook(cr, registry):
+    """Called automatically after module installation"""
+    _logger.info("🔧 Running post_init_hook for custom_invoice_template")
+    env = api.Environment(cr, SUPERUSER_ID, {})
     create_store_accounts(env)
-    _logger.info("🏁 post_load hook execution finished.")
+    _logger.info("🏁 post_init_hook finished")
 

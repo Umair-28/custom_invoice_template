@@ -114,7 +114,7 @@ def post_init_hook():
     Safe for accessing fields like account.account.company_id
     """
     import odoo
-    env = odoo.api.Environment(odoo.registry(odoo.tools.config.db_name).cursor(), SUPERUSER_ID, {})
+    env = odoo.api.Environment(odoo.registry(odoo.tools.config.odoo18).cursor(), SUPERUSER_ID, {})
     _logger.info("🔧 Running post_load hook for custom invoice module...")
     create_store_accounts(env)
     _logger.info("🏁 post_load hook execution finished.")

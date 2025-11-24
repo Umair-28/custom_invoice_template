@@ -4,6 +4,7 @@ from odoo import api, SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
+
 def create_store_accounts(env):
     _logger.info("🚀 Starting Store Account Creation Process")
 
@@ -25,10 +26,9 @@ def create_store_accounts(env):
 
     companies = env["res.company"].search([("name", "in", store_names)])
     if not companies:
-        _logger.error("❌ No store companies found. Check store names!")
-        raise ValueError("No store companies found. Check names!")
-
-    _logger.info(f"🔎 Found {len(companies)} companies for account creation.")
+        _logger.warning("❌ Some or all store companies not found. Skipping missing stores.")
+    else:
+        _logger.info(f"🔎 Found {len(companies)} companies for account creation.")
 
     # -----------------------------------------------------------
     # 2. Account Definitions
@@ -108,8 +108,19 @@ def create_store_accounts(env):
     _logger.info("🎉 All store accounts have been processed successfully!")
 
 
-def post_init_hook(cr, registry):
+def post_init_hook(*args, **kwargs):
+    """
+    Universal hook for Odoo 18
+    Accepts either (cr, registry) or (env)
+    """
+    if len(args) == 2:
+        cr, registry = args
+        env = api.Environment(cr, SUPERUSER_ID, {})
+    elif len(args) == 1:
+        env = args[0]
+    else:
+        raise ValueError("Invalid arguments passed to post_init_hook")
+
     _logger.info("🔧 Running post_init_hook for custom invoice module...")
-    env = api.Environment(cr, SUPERUSER_ID, {})
     create_store_accounts(env)
     _logger.info("🏁 post_init_hook execution finished.")

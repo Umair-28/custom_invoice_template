@@ -13,8 +13,22 @@
                     <field name="mode_of_payment"/>
                     <field name="ref_no"/>
                     <field name="other_ref"/>
+
+                    <field name="buyer_order_no"/>
+                    <field name="dispatch_doc_no"/>
+                    <field name="delivery_note_date"/>
+                    <field name="otherdispatch_through_ref"/>
+                    <field name="destination"/>
+                    <field name="bill_of_landing"/>
+                    <field name="vehicle_no"/>
+                    <field name="delivery_terms"/>
+
+
+
+
                 <!-- </group> -->
             </xpath>
+           
 
         </field>
     </record>

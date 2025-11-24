@@ -22,6 +22,7 @@
     """,
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
+    "post_init_hook": "post_init_hook",
     'depends': [
         'account',
         'l10n_in',

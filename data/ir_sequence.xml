@@ -1,0 +1,8 @@
+<odoo>
+    <record id="seq_custom_store_account_code" model="ir.sequence">
+        <field name="name">Store Account Code</field>
+        <field name="code">custom.store.account.code</field>
+        <field name="prefix">77</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

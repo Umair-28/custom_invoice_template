@@ -9,7 +9,14 @@ class AccountReport(models.AbstractModel):
 
     @api.model
     def _get_store_financial_data(self, company_id, date_from, date_to):
-        '''Get financial data for a specific store/company using account tags'''
+        '''
+        Get financial data for a specific store/company using account tags
+        
+        :param company_id: ID of the company to get data for
+        :param date_from: Start date for the period
+        :param date_to: End date for the period
+        :return: Dictionary with categorized financial data
+        '''
         
         store_data = {
             'revenue_from_operations': 0,
@@ -52,11 +59,16 @@ class AccountReport(models.AbstractModel):
         }
         
         # Query to get balances grouped by account tags
+        # Only for the SPECIFIC company provided
         query = '''
             SELECT 
                 aat.name as tag_name,
                 aa.account_type,
-                SUM(aml.balance) as balance
+                aa.code as account_code,
+                aa.name as account_name,
+                SUM(aml.balance) as balance,
+                SUM(aml.debit) as total_debit,
+                SUM(aml.credit) as total_credit
             FROM account_move_line aml
             JOIN account_account aa ON aa.id = aml.account_id
             JOIN account_move am ON am.id = aml.move_id
@@ -67,26 +79,31 @@ class AccountReport(models.AbstractModel):
                 AND am.company_id = %s
                 AND am.date >= %s
                 AND am.date <= %s
-            GROUP BY aat.name, aa.account_type
+                AND aa.account_type IN ('income', 'income_other', 'expense', 'expense_depreciation', 'expense_direct_cost')
+            GROUP BY aat.name, aa.account_type, aa.code, aa.name
             HAVING SUM(aml.balance) != 0
+            ORDER BY aa.code
         '''
         
         self.env.cr.execute(query, (company_id, date_from, date_to))
         results = self.env.cr.dictfetchall()
         
-        _logger.info(f"Financial data query returned {len(results)} records for company {company_id}")
+        company = self.env['res.company'].browse(company_id)
+        _logger.info(f"Processing financial data for company: {company.name} (ID: {company_id})")
+        _logger.info(f"Period: {date_from} to {date_to}")
+        _logger.info(f"Found {len(results)} account records with balances")
         
         for record in results:
             balance = record['balance']
             tag_name = (record.get('tag_name') or '').lower()
             account_type = record['account_type']
+            account_code = record.get('account_code', '')
+            account_name = record.get('account_name', '')
             
-            # For income accounts, balance is negative (credit), so we negate it
-            # For expense accounts, balance is positive (debit), so we use absolute value
-            if account_type in ('income', 'income_other'):
-                amount = abs(balance)  # Income is normally credit (negative)
-            else:
-                amount = abs(balance)  # Expenses are normally debit (positive)
+            # Income accounts have CREDIT balance (negative in Odoo)
+            # Expense accounts have DEBIT balance (positive in Odoo)
+            # We need absolute values for reporting
+            amount = abs(balance)
             
             # Match tag to category
             matched = False
@@ -95,20 +112,26 @@ class AccountReport(models.AbstractModel):
                     if tag_pattern in tag_name:
                         store_data[field_name] += amount
                         matched = True
-                        _logger.debug(f"Matched tag '{tag_name}' to {field_name}: {amount}")
+                        _logger.debug(f"[{account_code}] {account_name}: {amount} → {field_name} (via tag: {tag_name})")
                         break
             
             # Fallback: categorize by account type if no tag matched
             if not matched:
                 if account_type == 'income':
                     store_data['revenue_from_operations'] += amount
-                    _logger.debug(f"Untagged income account: {amount}")
+                    _logger.debug(f"[{account_code}] {account_name}: {amount} → revenue_from_operations (untagged income)")
                 elif account_type == 'income_other':
                     store_data['other_income'] += amount
-                    _logger.debug(f"Untagged other income: {amount}")
-                elif account_type in ('expense', 'expense_depreciation', 'expense_direct_cost'):
+                    _logger.debug(f"[{account_code}] {account_name}: {amount} → other_income (untagged)")
+                elif account_type == 'expense_depreciation':
+                    store_data['depreciation'] += amount
+                    _logger.debug(f"[{account_code}] {account_name}: {amount} → depreciation (by type)")
+                elif account_type == 'expense_direct_cost':
+                    store_data['direct_expenses'] += amount
+                    _logger.debug(f"[{account_code}] {account_name}: {amount} → direct_expenses (by type)")
+                elif account_type == 'expense':
                     store_data['other_expenses'] += amount
-                    _logger.debug(f"Untagged expense: {amount}")
+                    _logger.debug(f"[{account_code}] {account_name}: {amount} → other_expenses (untagged)")
         
         # Calculate totals
         store_data['total_income'] = (
@@ -143,11 +166,47 @@ class AccountReport(models.AbstractModel):
             store_data['total_tax']
         )
         
-        _logger.info(f"Financial Summary - Income: {store_data['total_income']}, "
-                    f"Expenses: {store_data['total_expenses']}, "
-                    f"Profit: {store_data['profit_after_tax']}")
+        _logger.info(f"=== FINANCIAL SUMMARY for {company.name} ===")
+        _logger.info(f"Total Income: {store_data['total_income']:,.2f}")
+        _logger.info(f"  - Revenue from Operations: {store_data['revenue_from_operations']:,.2f}")
+        _logger.info(f"  - Other Income: {store_data['other_income']:,.2f}")
+        _logger.info(f"Total Expenses: {store_data['total_expenses']:,.2f}")
+        _logger.info(f"Profit Before Tax: {store_data['profit_before_tax']:,.2f}")
+        _logger.info(f"Total Tax: {store_data['total_tax']:,.2f}")
+        _logger.info(f"Profit After Tax: {store_data['profit_after_tax']:,.2f}")
+        _logger.info(f"=========================================")
         
         return store_data
+    
+    
+    @api.model
+    def _get_all_stores_financial_data(self, date_from, date_to, company_ids=None):
+        '''
+        Get financial data for multiple companies/stores
+        
+        :param date_from: Start date for the period
+        :param date_to: End date for the period
+        :param company_ids: List of company IDs (if None, gets all companies user has access to)
+        :return: Dictionary with company_id as key and financial data as value
+        '''
+        
+        if company_ids is None:
+            # Get all companies the user has access to
+            company_ids = self.env['res.company'].search([]).ids
+        
+        all_stores_data = {}
+        
+        for company_id in company_ids:
+            company = self.env['res.company'].browse(company_id)
+            _logger.info(f"Fetching data for company: {company.name}")
+            
+            store_data = self._get_store_financial_data(company_id, date_from, date_to)
+            all_stores_data[company_id] = {
+                'company_name': company.name,
+                'data': store_data
+            }
+        
+        return all_stores_data
 # from odoo import models, api, fields, _
 # import logging
 

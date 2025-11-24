@@ -7,9 +7,9 @@
         <field name="arch" type="xml">
 
             <xpath expr="//field[@name='invoice_date']" position="before">
-
+                
                 <separator string="Additional Invoice Details" colspan="2"/>
-
+                
                 <group col="4">
                     <!-- Left Column -->
                     <group colspan="2">
@@ -24,18 +24,14 @@
                         <field name="destination"/>
                     </group>
 
-
-                </group>
-
-                <group col="4">
                     <!-- Right Column -->
                     <group colspan="2">
                         <field name="bill_of_landing"/>
                         <field name="vehicle_no"/>
                         <field name="delivery_terms"/>
-
+                        
                         <separator string="Consignee (Ship To)" colspan="2"/>
-
+                        
                         <field name="consignee_name"/>
                         <field name="consignee_address"/>
                         <field name="consigness_gst"/>
@@ -43,7 +39,6 @@
                         <field name="consigness_code"/>
                     </group>
                 </group>
-
 
             </xpath>
 

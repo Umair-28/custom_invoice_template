@@ -8,12 +8,12 @@
 
             <!-- Add fields after invoice date -->
             <xpath expr="//field[@name='invoice_date']" position="after">
-                <group string="Dispatch Details">
+                <!-- <group string="Dispatch Details"> -->
                     <field name="delivery_note"/>
                     <field name="mode_of_payment"/>
                     <field name="ref_no"/>
                     <field name="other_ref"/>
-                </group>
+                <!-- </group> -->
             </xpath>
 
         </field>

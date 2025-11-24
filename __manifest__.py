@@ -30,7 +30,7 @@
         'account_reports'
     ],
     'data': [
-        'data/create_store_accounts.py'
+        'data/create_store_accounts.py',
         'data/ir_sequence.xml', 
 
         # 'data/account_tags.xml', 

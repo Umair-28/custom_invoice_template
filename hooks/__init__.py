@@ -1,1 +1,1 @@
-from .hooks.create_store_accounts import post_init_hook
+from .create_store_accounts import post_init_hook

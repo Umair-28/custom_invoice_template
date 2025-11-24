@@ -350,7 +350,7 @@
                                                 <strong>Bill of Lading/LR-RR No.</strong>
                                             </td>
                                             <td>
-                                                <span t-field="o.bill_of_landing">
+                                                <span t-field="o.bill_of_landing"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -358,7 +358,7 @@
                                                     <strong>Motor Vehicle No.</strong>
                                                 </td>
                                                 <td>
-                                                    <span t-field="o.vehicle_no">
+                                                    <span t-field="o.vehicle_no"/>
 
                                                     </td>
                                                 </tr>
@@ -367,7 +367,7 @@
                                                         <strong>Terms of Delivery</strong>
                                                     </td>
                                                     <td>
-                                                        <span t-field="o.delivery_terms">
+                                                        <span t-field="o.delivery_terms"/>
 
                                                         </td>
                                                     </tr>

@@ -17,7 +17,7 @@
                     <field name="buyer_order_no"/>
                     <field name="dispatch_doc_no"/>
                     <field name="delivery_note_date"/>
-                    <field name="otherdispatch_through_ref"/>
+                    <field name="dispatch_through"/>
                     <field name="destination"/>
                     <field name="bill_of_landing"/>
                     <field name="vehicle_no"/>

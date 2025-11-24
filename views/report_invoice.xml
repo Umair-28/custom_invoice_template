@@ -98,7 +98,7 @@
                                     </t>
                                     <t t-else="">
                                         <!-- Company as Supplier for Sales Invoices -->
-                                        <div t-if="o.company_id.logo" style="margin-bottom: 10px;">
+                                        <div t-if="o.company_id.logo_web" style="margin-bottom: 10px;">
                                             <img t-att-src="image_data_uri(o.company_id.logo_web)" style="max-height: 50px; max-width: 120px;"/>
                                         </div>
                                         <strong style="font-size: 12px;">

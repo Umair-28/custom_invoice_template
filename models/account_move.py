@@ -22,3 +22,9 @@ class AccountMove(models.Model):
     vehicle_no = fields.Char(stirng="Vehicle No")
     delivery_terms = fields.Char(string="Terms of Delivery")
 
+    consignee_name = fields.Char(string="Name")
+    consignee_address = fields.Char(string="Address")
+    consigness_gst = fields.Char(string="GSTIN/UIN")
+    consignee_state = fields.Char(string="State")
+    consigness_code = fields.Char(string="Code")
+

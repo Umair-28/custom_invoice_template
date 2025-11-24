@@ -9,26 +9,35 @@
             <!-- Add fields after invoice date -->
             <xpath expr="//field[@name='invoice_date']" position="after">
                 <!-- <group string="Dispatch Details"> -->
-                    <field name="delivery_note"/>
-                    <field name="mode_of_payment"/>
-                    <field name="ref_no"/>
-                    <field name="other_ref"/>
+                <field name="delivery_note"/>
+                <field name="mode_of_payment"/>
+                <field name="ref_no"/>
+                <field name="other_ref"/>
 
-                    <field name="buyer_order_no"/>
-                    <field name="dispatch_doc_no"/>
-                    <field name="delivery_note_date"/>
-                    <field name="dispatch_through"/>
-                    <field name="destination"/>
-                    <field name="bill_of_landing"/>
-                    <field name="vehicle_no"/>
-                    <field name="delivery_terms"/>
+                <field name="buyer_order_no"/>
+                <field name="dispatch_doc_no"/>
+                <field name="delivery_note_date"/>
+                <field name="dispatch_through"/>
+                <field name="destination"/>
+                <field name="bill_of_landing"/>
+                <field name="vehicle_no"/>
+                <field name="delivery_terms"/>
+
+                <group string="Consignee (Ship to)">
+                    <field name="consignee_name"/>
+                    <field name="consignee_address"/>
+                    <field name="consigness_gst"/>
+                    <field name="consignee_state"/>
+                    <field name="consigness_code"/>
+
+                </group>
 
 
 
 
                 <!-- </group> -->
             </xpath>
-           
+
 
         </field>
     </record>

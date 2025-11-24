@@ -108,10 +108,8 @@ def create_store_accounts(env):
     _logger.info("🎉 All store accounts have been processed successfully!")
 
 
-def post_init_hook(cr, registry):
-    """Called automatically after module installation"""
+def post_init_hook(env):
+    """Called automatically after module installation - FIXED SIGNATURE"""
     _logger.info("🔧 Running post_init_hook for custom_invoice_template")
-    env = api.Environment(cr, SUPERUSER_ID, {})
     create_store_accounts(env)
     _logger.info("🏁 post_init_hook finished")
-

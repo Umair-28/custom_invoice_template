@@ -30,7 +30,10 @@
         'account_reports'
     ],
     'data': [
-        'data/account_tags.xml', 
+        'data/create_store_accounts.py'
+        'data/ir_sequence.xml', 
+
+        # 'data/account_tags.xml', 
         'views/report_invoice.xml',
         'views/multi_store_pl_wizard_views.xml',
         'views/report_multi_store_pl_template.xml',

@@ -157,7 +157,9 @@
                                             <strong>Mode/Terms of Payment</strong>
                                         </td>
                                         <td>
-                                            <span t-field="o.invoice_payment_term_id.name"/>
+                                            <!-- <span t-field="o.invoice_payment_term_id.name"/> -->
+                                            <span t-field="o.mode_of_payment"/>
+
                                         </td>
                                     </tr>
                                     <tr>
@@ -165,14 +167,18 @@
                                             <strong>Reference No.</strong>
                                         </td>
                                         <td>
-                                            <span t-field="o.ref"/>
+                                            <!-- <span t-field="o.ref"/> -->
+                                            <span t-field="o.ref_no"/>
+
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <strong>Other References</strong>
                                         </td>
-                                        <td></td>
+                                        <td>
+                                            <span t-field="o.other_ref"/>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -258,7 +264,7 @@
                                         <td>
                                             <strong>Delivery Note Date</strong>
                                         </td>
-                                        <td></td>
+                                        <td><span t-field="o.delivery_note"/></td>
                                     </tr>
                                     <tr>
                                         <td>

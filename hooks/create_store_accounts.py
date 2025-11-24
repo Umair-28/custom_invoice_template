@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+import logging
 from odoo import api, SUPERUSER_ID
 
+_logger = logging.getLogger(__name__)
+
 def create_store_accounts(env):
+    _logger.info("🚀 Starting Store Account Creation Process")
+
     # -----------------------------------------------------------
     # 1. Define Stores (Companies)
     # -----------------------------------------------------------
@@ -18,15 +23,16 @@ def create_store_accounts(env):
         "Store 10 - Warehouse Center",
     ]
 
-    # Find company records
     companies = env["res.company"].search([("name", "in", store_names)])
     if not companies:
+        _logger.error("❌ No store companies found. Check store names!")
         raise ValueError("No store companies found. Check names!")
+
+    _logger.info(f"🔎 Found {len(companies)} companies for account creation.")
 
     # -----------------------------------------------------------
     # 2. Account Definitions
     # -----------------------------------------------------------
-
     income_accounts = {
         "Revenue from Operations": "income",
         "Other Income": "income_other",
@@ -57,46 +63,53 @@ def create_store_accounts(env):
         "Diluted": "income",
     }
 
-    # Merge all accounts
     all_accounts = {}
     all_accounts.update(income_accounts)
     all_accounts.update(expense_accounts)
     all_accounts.update(tax_accounts)
     all_accounts.update(earning_accounts)
 
+    _logger.info(f"📘 Total accounts to create per company: {len(all_accounts)}")
+
     # -----------------------------------------------------------
     # 3. Create Accounts Per Store
     # -----------------------------------------------------------
     for company in companies:
-        print(f"Creating accounts for → {company.name}")
+        _logger.info(f"🏢 Processing company: {company.name}")
 
         for acc_name, acc_type in all_accounts.items():
             full_name = f"{acc_name} ({company.name})"
 
-            # Check if already exists
             existing = env["account.account"].search([
                 ("name", "=", full_name),
                 ("company_id", "=", company.id)
             ])
 
             if existing:
-                print(f"[SKIP] Already exists → {full_name}")
+                _logger.warning(f"⚠️ SKIPPED (already exists): {full_name}")
                 continue
 
-            # Create account
-            env["account.account"].create({
-                "name": full_name,
-                "code": env["ir.sequence"].next_by_code("custom.store.account.code") or "999999",
-                "company_id": company.id,
-                "account_type": acc_type,
-                "reconcile": False,
-            })
+            try:
+                code = env["ir.sequence"].next_by_code("custom.store.account.code") or "999999"
 
-            print(f"[CREATED] {full_name}")
+                env["account.account"].create({
+                    "name": full_name,
+                    "code": code,
+                    "company_id": company.id,
+                    "account_type": acc_type,
+                    "reconcile": False,
+                })
 
-    print("All store accounts have been created successfully.")
+                _logger.info(f"✅ CREATED: {full_name} | Code: {code}")
+
+            except Exception as e:
+                _logger.error(f"❌ ERROR creating account '{full_name}' for company '{company.name}': {str(e)}")
+
+    _logger.info("🎉 All store accounts have been processed successfully!")
 
 
 def post_init_hook(cr, registry):
+    _logger.info("🔧 Running post_init_hook for custom invoice module...")
     env = api.Environment(cr, SUPERUSER_ID, {})
     create_store_accounts(env)
+    _logger.info("🏁 post_init_hook execution finished.")

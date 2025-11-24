@@ -273,7 +273,7 @@
                                             <strong>Dispatched through</strong>
                                         </td>
                                         <td>
-                                            <span t-field="o.dispatch_through">
+                                            <span t-field="o.dispatch_through"/>
                                             </td>
                                         </tr>
                                         <tr>

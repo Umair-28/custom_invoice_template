@@ -108,19 +108,14 @@ def create_store_accounts(env):
     _logger.info("🎉 All store accounts have been processed successfully!")
 
 
-def post_init_hook(*args, **kwargs):
+def post_init_hook():
     """
-    Universal hook for Odoo 18
-    Accepts either (cr, registry) or (env)
+    Hook called after all modules are loaded.
+    Safe for accessing fields like account.account.company_id
     """
-    if len(args) == 2:
-        cr, registry = args
-        env = api.Environment(cr, SUPERUSER_ID, {})
-    elif len(args) == 1:
-        env = args[0]
-    else:
-        raise ValueError("Invalid arguments passed to post_init_hook")
-
-    _logger.info("🔧 Running post_init_hook for custom invoice module...")
+    import odoo
+    env = odoo.api.Environment(odoo.registry(odoo.tools.config.db_name).cursor(), SUPERUSER_ID, {})
+    _logger.info("🔧 Running post_load hook for custom invoice module...")
     create_store_accounts(env)
-    _logger.info("🏁 post_init_hook execution finished.")
+    _logger.info("🏁 post_load hook execution finished.")
+

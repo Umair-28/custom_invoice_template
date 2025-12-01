@@ -43,7 +43,6 @@
           parent="account.menu_finance_reports"
           action="action_multi_store_pl_wizard"
           sequence="50"
-          groups="base.group_user"
           />
 </odoo>
 <!-- <odoo>

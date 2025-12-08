@@ -42,6 +42,7 @@
           name="Multi-Store PL Report"
           parent="account.menu_finance_reports"
           action="action_multi_store_pl_wizard"
+          groups="base.group_user"
           sequence="50"
           />
 </odoo>
